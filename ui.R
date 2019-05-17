@@ -2,7 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(shinyalert)
-library(DT)
+
 source('survey_questions.R')
 glossary <- read.csv('glossary_shinysurvey.csv', colClasses = rep('character', 2))
 glossHTML <- c()
@@ -145,8 +145,6 @@ body <- dashboardBody(
             textAreaInput('q5C', '5. Do you have any additional comments?', width = '600px', height = '150px'),
             br(),
             actionButton('submitResponse', 'Complete Survey'),
-            DT::dataTableOutput('testTable')
-            
             ),
     tabItem('tabGlossary',
             titlePanel('Glossary'),
