@@ -4,6 +4,7 @@ library(shinyWidgets)
 library(shinyalert)
 
 source('survey_questions.R')
+
 glossary <- read.csv('glossary_shinysurvey.csv', colClasses = rep('character', 2))
 glossHTML <- c()
 for(i in 1:nrow(glossary)){
@@ -33,12 +34,6 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
-  # tags$style(".checkbox-inline, .radio-inline {
-  #   text-align: left;
-  #            margin-left: 20px;
-  #            margin-right: 0px;
-  #            padding: 0px;
-  #            width: 400px;} "),
   tabItems(
     tabItem('tabOverview',
             titlePanel('Overview'),
