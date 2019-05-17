@@ -11,3 +11,4 @@ TODO:
 - [ ] Relocate survey to SCCWRP shiny server
 - [ ] Verify that SCCWRP server allows storage and edits to a CSV within the app
 - [ ] Modify code to prevent response file from blowing up
+- [ ] Add comments to code
