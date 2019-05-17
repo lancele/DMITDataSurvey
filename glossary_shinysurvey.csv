@@ -1,0 +1,18 @@
+term,definition
+ad hoc database system,a database system that is created for a single purpose and to answer a specific question. This is in contrast to database systems that are predefined and routinely processed
+computer programming/coding,"the process of designing and building an executable computer program for accomplishing a specific computing task. Languages include Java, Python, SQL, PHP, R, and C++, to name a few"
+data analysis,"the process of systematically applying statistical and/or logical technique to describe and illustrate, condense and recap, and evaluate data"
+data organization and cleaning,the process of detecting and correcting (or removing) corrupt or inaccurate records from a dataset
+data management,"the administrative process that includes acquiring, validating, storing, protecting, and processing required data to ensure the accessibility, reliability, and timeliness of the data for its users"
+database,"an organized collection of data, generally stored and accessed electronically from a computer system"
+data storytelling,"a structured  approach of communicating data insights that include a combination of data, visuals and narrative"
+data visualization,"a graphical representation of information and data using visual elements like charts, graphs, and maps"
+statistical analysis,"the process of collecting and reading data so that one can describe past behavior and characteristics, and predict future ones"
+machine learning,the study of algorithms and statistical models that computer systems use to perform a specific task by relying on patterns and inference rather than explicit instructions. It is considered a subset of artificial intelligence
+Microsoft Access,a database management system from Microsoft that combines the relational Microsoft Jet Database engine with a graphical user interface and software development tools
+SQL,Structured Query Language- a language used to communicate with a database. It is the standard language for relational database management systems
+Tableau,a software used to produce interactive data visualization products focused on business intelligence
+Microsoft Power BI,a business intelligence platform used to analyze data and create interactive data visualizations
+ArcGIS,a geographic information system for working with maps and geographic informatio
+Python,a general purpose programming language used to develop both desktop and web applications. Python is designed with features to facilitate data analysis and visualization
+R and/or Shiny,a programming language and free software environment predominately used in statistical analysis and data analytics. Shiny is an R package that makes it easy to build interactive web applications from R
