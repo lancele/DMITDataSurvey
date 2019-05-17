@@ -8,8 +8,6 @@ server <- function(input, output, session){
   
   response <- reactiveValues()
   
-  isolate(surveyCommit())
-  
   observeEvent(input$startSurvey, {
     updateTabItems(session, 'sidebarMenu', selected = 'tabBasic')
   })
