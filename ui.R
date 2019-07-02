@@ -2,9 +2,9 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(shinyalert)
+library(DT)
 
 source('survey_questions.R')
-
 glossary <- read.csv('glossary_shinysurvey.csv', colClasses = rep('character', 2))
 glossHTML <- c()
 for(i in 1:nrow(glossary)){
@@ -13,7 +13,7 @@ for(i in 1:nrow(glossary)){
 }
 
 header <- dashboardHeader(
-  title = 'Data Use and Skills Survey'
+  title = 'Data Literacy Survey'
 )
 
 sidebar <- dashboardSidebar(
@@ -24,6 +24,7 @@ sidebar <- dashboardSidebar(
     menuItem('A. Basic Information', tabName = 'tabBasic'),
     menuItem('B. Data Use', tabName = 'tabDataUse'),
     menuItem('C. Data Skills', tabName = 'tabDataSkills'),
+    menuItem('D. Comments', tabName = 'tabComments'),
     menuItem('Glossary', tabName = 'tabGlossary'),
     sidebarSearchForm('searchTerm', 'searchButton', label = 'Search glossary:'),
     br(),
@@ -35,111 +36,227 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   tabItems(
+    #### Overview Tab ####
     tabItem('tabOverview',
             titlePanel('Overview'),
             fluidRow(
               column(8,
                      p('The Water Boards’ Data Management Innovation Team is conducting a survey to
                        better understand how Water Boards staff and managers use and interact with
-                       data in their day-to-day work. The survey consists of questions asking
-                       about the data sources you use, specific data-related tasks you perform,
-                       and data science topics that are of interest to you. Your answers to these
-                       questions are anonymous and will inform a new initiative to offer data
-                       science training at the Water Boards.'),
-                     p('The last day to participate in the survey is ____Date____. If you have any
-              questions, please contact Michelle Tang (michelle.tang@waterboards.ca.gov)
-                       in the Office of Information Management and Analysis.')
-                     )
+                       data in their day-to-day work. Your responses will inform a new initiative to 
+                        offer data science training at the Water Boards.'),
+                     p('This survey is voluntary and should take about ______ minutes to complete. 
+                       All responses will be aggregated and analyzed as a group to protect your anonymity.'),
+                     p('The last day to participate in the survey is ________. If you have any questions, 
+                       please email', 
+                       a('WaterData@waterboards.ca.gov', href = 'mailto:WaterData@waterboards.ca.gov'),
+                       'and include "Data Survey" in the subject line.'),
+                     p('We thank you for your time and participation!')
+              )
             ),
             br(),
-            actionButton('startSurvey', 'Start Survey'),
-            verbatimTextOutput('testText')
+            actionButton('startSurvey', 'Start Survey')
     ),
+    #### Basic Tab ####
     tabItem('tabBasic',
             titlePanel('Basic Information'),
             br(),
-            selectInput('q1A', '1. At which Water Boards office do you currently work?',
-                        choices = q1A, width = '400px'),
+            selectInput('q1', '1. At which Water Boards office do you currently work?',
+                        choices = q1, width = '400px'),
             br(),
-            textInput('q2A', '2. In what program/functional area do you work (e.g. Nonpoint Source, GAMA)?',
+            selectInput('q2', '2. For which State Water Board division do you currently work?',
+                        choices = q2, width = '400px'),
+            textInput('q2other', 'Provide name of other division, if applicable:', width = '400px'),
+            
+            textInput('q3', '3. In what program/functional area do you work (e.g. Nonpoint Source, GAMA)?',
                       width = '400px'),
             br(),
-            radioButtons('q3A', '3. Are you a supervisor?', width = '400px',
+            radioButtons('q4', '4. Are you a supervisor?', width = '400px',
                          choices = list('Yes' = TRUE,
                                         'No' = FALSE)),
             br(),
-            actionButton('submitBasic', 'Submit Responses and Go to Section B')
+            actionButton('submitBasic', 'Submit Responses and Go to Section B'),
+            br()
     ),
+    #### Data Use Tab ####
     tabItem('tabDataUse',
+            #tags$head(tags$style(HTML("#foo {background-color:none}"))),
             titlePanel('Data Use Assessment'),
             br(),
-            checkboxGroupInput('q1B', '1. Please choose all the databases you use for your day-to-day work.',
-                               choiceNames = q1Bchoices, choiceValues = q1Bvalues, width = '100%'),
-            conditionalPanel(
-              condition = "input.q1B.indexOf('Other') > -1",
-              textInput('q1Bother', 'Provide name of other database:', width = '400px')
+            p(strong('5. Which Water Boards data sources do you use for your work, and how do you use them?')),
+            fluidRow(
+              column(8,
+                     DT::dataTableOutput('q5'),
+                     textInput('q5other', 'Please name other Water Boards database, if applicable:', width = '100%')
+                     #verbatimTextOutput('sel')
+                     )
             ),
             br(),
-            strong('2. How often do you perform the following data-related tasks?'),
-            br(), br(),
-            radioButtons('q2Ba','a. Search and cross reference data from multiple databases or sources',
-                         choices = q2B, inline = TRUE),
-            radioButtons('q2Bb','b. Identify errors and problems in data',
-                         choices = q2B, inline = TRUE),
-            radioButtons('q2Bc','c. Write documentation and metadata',
-                         choices = q2B, inline = TRUE),
-            radioButtons('q2Bd','d. Analyze data to identify patterns, trends, and other relationships in data',
-                         choices = q2B, inline = TRUE),
-            radioButtons('q2Be','e. Use machine learning to automate tasks and make predictions',
-                         choices = q2B, inline = TRUE),
-            radioButtons('q2Bf','f. Present data and findings to others',
-                         choices = q2B, inline = TRUE),
-            radioButtons('q2Bg','g. Use data to inform decision-making ',
-                         choices = q2B, inline = TRUE),
-            br(),
-            selectInput('q3B', '3. To what extent does your Water Board programs use data to support decision-making?',
-                        choices = q3B),
+            p(strong(q6prompt)),
+            fluidRow(
+              column(4,
+                     textInput('q6name', 'Name of data source:', width = '100%')
+                     ),
+              column(4,
+                     selectInput('q6answer', '', 
+                                 choices = list('I do not use this data source' = 1, 
+                                                'I add or contribute data to this data source' = 2,
+                                                'I update the data in this data source' = 3,
+                                                'I look up or download data from this data source' = 4)
+                     )
+              )
+            ),
             br(),
             actionButton('submitDataUse', 'Submit Responses and Go to Section C')
     ),
-    
+    #### Data Skills Tab ####
     tabItem('tabDataSkills',
             titlePanel('Data Skills Assessment'),
-            selectInput('q1C', '1. Are you interested in taking data science courses offered by the Water Boards Training Academy?',
-                        choices = q1C),
             br(),
-            checkboxGroupInput('q2C', '2. Which data cience topics would you be interested in learning?',
-                               choiceNames = q2Cchoices, choiceValues = q2Cvalues, width = '100%'),
-            conditionalPanel(
-              condition = "input.q2C.indexOf('other') > -1",
-              textInput('q2Cother', 'Provide name of other topics:', width = '400px')
+            selectInput('q7', '7. Are you interested in taking data science courses offered by the Water Boards Training Academy?',
+                        choices = q7),
+            br(),
+            #### Question 8 ####
+            p(strong('8. Please answer the following questions about data-related tasks.')),
+            fluidRow(
+              column(2,
+                     ''),
+              column(2,'How often do you perform this task?'),
+              column(2,'How would you assess your skill level in performing this task?'),
+              column(2,'Are you interested in further developing this skill set?')
+            ),
+            fluidRow(
+              column(2,
+                     p('a. Collect and combine data from different sources',
+                       style = 'margin-top: 15px;')
+                     ),
+              column(2, selectInput('q8a1', '', choices = q8choicesFreq, width = '100%')
+                     ),
+              column(2, selectInput('q8a2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8a3', '', choices = q8choicesInt, width = '100%'))
+            ),
+            fluidRow(
+              column(2,
+                     p('b. Clean and validate data to ensure accuracy, consistency, and completeness',
+                       style = 'margin-top: 15px;')
+              ),
+              column(2, selectInput('q8b1', '', choices = q8choicesFreq, width = '100%')
+              ),
+              column(2, selectInput('q8b2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8b3', '', choices = q8choicesInt, width = '100%'))
+            ),
+            fluidRow(
+              column(2, p('c. Create data visualizations (charts and graphs)',
+                          style = 'margin-top: 15px;')),
+              column(2, selectInput('q8c1', '', choices = q8choicesFreq, width = '100%')
+              ),
+              column(2, selectInput('q8c2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8c3', '', choices = q8choicesInt, width = '100%'))
+            ),
+            fluidRow(
+              column(2,
+                     p('d. Use statistics to identify trends and other relationships in data',
+                       style = 'margin-top: 15px;')
+              ),
+              column(2, selectInput('q8d1', '', choices = q8choicesFreq, width = '100%')),
+              column(2, selectInput('q8d2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8d3', '', choices = q8choicesInt, width = '100%'))
+            ),            
+            fluidRow(
+              column(2, p('e. Write code to transform, analyze, or visualize data',
+                          style = 'margin-top: 15px;')
+              ),
+              column(2, selectInput('q8e1', '', choices = q8choicesFreq, width = '100%')
+              ),
+              column(2, selectInput('q8e2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8e3', '', choices = q8choicesInt, width = '100%'))
+            ),           
+            fluidRow(
+              column(2,
+                     p('f. Use machine learning to automate tasks and make predictions',
+                       style = 'margin-top: 15px;')
+              ),
+              column(2, selectInput('q8f1', '', choices = q8choicesFreq, width = '100%')
+              ),
+              column(2, selectInput('q8f2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8f3', '', choices = q8choicesInt, width = '100%'))
+            ),
+            fluidRow(
+              column(2, textInput('q8g', '', placeholder = 'g. Other:')),
+              column(2, selectInput('q8g1', '', choices = q8choicesFreq, width = '100%')),
+              column(2, selectInput('q8g2', '', choices = q8choicesExp, width = '100%')),
+              column(2, selectInput('q8g3', '', choices = q8choicesInt, width = '100%'))
             ),
             br(),
-            strong('3. What is your skill level with each of the following software, tools, and programming languages?'),
-            br(), br(),
-            radioButtons('q3Ca', 'Microsoft Excel', choices = q3C, inline = TRUE),
-            radioButtons('q3Cb', 'Microsoft Access', choices = q3C, inline = TRUE),
-            radioButtons('q3Cc', 'SQL', choices = q3C, inline = TRUE),
-            radioButtons('q3Cd', 'Tableau', choices = q3C, inline = TRUE),
-            radioButtons('q3Ce', 'Microsoft Office BI', choices = q3C, inline = TRUE),
-            radioButtons('q3Cf', 'ArcGIS', choices = q3C, inline = TRUE),
-            radioButtons('q3Cg', 'Python', choices = q3C, inline = TRUE),
-            radioButtons('q3Ch', 'R', choices = q3C, inline = TRUE),
+            #### Question 9 ####
+            p(strong('9. Please answer the following questions about data science software
+                     and computer languages.')),
+            fluidRow(
+              column(2, ''),
+              column(2, 'What is your skill level with this software or computer language?'),
+              column(2, 'Are you interested in further developing your skills with this software or
+                     computer language?')
+            ),
+            fluidRow(
+              column(2, p('a. Microsoft Excel', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9a1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9a2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('b. Microsoft Access', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9b1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9b2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('c. Structured Query Language (SQL)', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9c1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9c2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('d. Tableau', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9d1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9d2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('e. Microsoft Power BI', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9e1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9e2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('f. ArcGIS', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9f1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9f2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('g. Python', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9g1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9g2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, p('h. R', style = 'margin-top: 25px;')),
+              column(2, selectInput('q9h1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9h2', '', choices = q9choicesInt))
+            ),
+            fluidRow(
+              column(2, textInput('q9i', '', placeholder = 'i. Other:')),
+              column(2, selectInput('q9i1', '', choices = q9choicesExp)),
+              column(2, selectInput('q9i2', '', choices = q9choicesInt))
+            ),
+            #### ####
             br(),
-            strong('4. What is your interest level in learning each of the following software, tools, and programming languages?'),
-            br(), br(),
-            radioButtons('q4Ca', 'Microsoft Excel', choices = q1C, inline = TRUE),
-            radioButtons('q4Cb', 'Microsoft Access', choices = q1C, inline = TRUE),
-            radioButtons('q4Cc', 'SQL', choices = q1C, inline = TRUE),
-            radioButtons('q4Cd', 'Tableau', choices = q1C, inline = TRUE),
-            radioButtons('q4Ce', 'Microsoft Office BI', choices = q1C, inline = TRUE),
-            radioButtons('q4Cf', 'ArcGIS', choices = q1C, inline = TRUE),
-            radioButtons('q4Cg', 'Python', choices = q1C, inline = TRUE),
-            radioButtons('q4Ch', 'R', choices = q1C, inline = TRUE),
+            actionButton('submitDataSkills', 'Submit Responses and Go to Section D')
+    ),
+    #### Comments Tab ####
+    tabItem('tabComments',
+            titlePanel('Additional Comments'),
+            
             br(),
-            textAreaInput('q5C', '5. Do you have any additional comments?', width = '600px', height = '150px'),
+            textAreaInput('q10', q10txt, width = '600px', height = '150px'),
+            br(),
+            textAreaInput('q11', '11. Do you have any additional comments?', width = '600px', height = '150px'),
             br(),
             actionButton('submitResponse', 'Complete Survey'),
+            DT::dataTableOutput('testTable')
             ),
     tabItem('tabGlossary',
             titlePanel('Glossary'),
@@ -147,6 +264,7 @@ body <- dashboardBody(
             HTML(glossHTML)
             )
   )
+  #### End UI ####
 )
 
 
