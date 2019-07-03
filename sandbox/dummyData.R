@@ -11,7 +11,6 @@ for(i in 1:nrow(response.out)){
   survey$response[[i]] <- a[a!='']
 }
 
-
 qNames <- c('q1','q2','q2other', 'q3', 'q4', paste('q5', letters[1:7], sep=''),
             'q5other', 'q6name', 'q6answer', 'q7',
             paste('q8', rep(letters[1:7], each = 3), 1:3, sep = ''), 'q8other',
@@ -19,9 +18,6 @@ qNames <- c('q1','q2','q2other', 'q3', 'q4', paste('q5', letters[1:7], sep=''),
             'q10', 'q11')
 
 surveyLookup <- data.frame(qname = qNames, qShort = qNames, qLong = survey$questionLong)
-
-dummyResponse <- as.data.frame(matrix(nrow=1, ncol=length(qNames)))
-
 
 generateDummyResponse <- function(responses){
   if(length(responses)<2){
