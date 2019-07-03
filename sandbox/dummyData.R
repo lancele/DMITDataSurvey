@@ -1,3 +1,4 @@
+library(tidyr)
 
 response <- read.csv('sandbox/DataSurveyResponses.csv', colClasses = c('logical',rep('character', 14)))
 response.out <- response[response$IsQuestion,]
@@ -17,7 +18,7 @@ qNames <- c('q1','q2','q2other', 'q3', 'q4', paste('q5', letters[1:7], sep=''),
             paste('q9', rep(letters[1:9], each = 2), 1:2, sep = ''), 'q9other',
             'q10', 'q11')
 
-surveyLookup <- data.frame(qname = qNames, qShort = qNames, qLong = survey$questionLong)
+surveyLookup <- data.frame(qShort = qNames, qLong = survey$questionLong)
 
 generateDummyResponse <- function(responses){
   if(length(responses)<2){
