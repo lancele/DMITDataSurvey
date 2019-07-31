@@ -42,7 +42,7 @@ body <- dashboardBody(
             fluidRow(
               column(8,
                      p('The Water Boards’ Data Management Innovation Team is conducting a survey to better understand how Water Boards staff and managers use and interact with data in their day-to-day work. Your responses will inform a new initiative to offer data science training at the Water Boards.'),
-                     p('This survey is voluntary and should take about', tags$b('7 minutes'), 'to complete. All responses will be aggregated and analyzed as a group to protect your anonymity. The last day to participate in the survey is ________.'),
+                     p('This survey is voluntary and should take about', tags$b('7 minutes'), 'to complete. All responses will be aggregated and analyzed as a group to protect your anonymity. The last day to participate in the survey is', tags$b('September 27, 2019'),'.'),
                      p('We will be holding a drawing for four $25 Amazon Gift Cards. To enter the drawing, enter your email address at the end of the survey and submit your completed survey. We ask for your email address only so that we can notify the gift card winners. We will not share or sell your information. The winners of the drawing will be randomly selected and notified after the survey period closes. Participation in the drawing is optional.'),
                      p('If you have any questions, please email', a('WaterData@waterboards.ca.gov', href = 'mailto:WaterData@waterboards.ca.gov'), 'and include "Data Survey" in the subject line.'),
                      p('We thank you for your time and participation!')
