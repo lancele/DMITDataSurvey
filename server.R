@@ -78,7 +78,7 @@ server <- function(input, output, session){
 
   observeEvent(input$submitResponse, {
     
-    
+    ### Record responses and write to file
     qNames <- c('q1','q2','q2other', 'q3', 'q4', paste('q5', letters[1:7], sep=''),
                 'q5other', 'q6name', 'q6answer', 'q7',
                 paste('q8', rep(letters[1:7], each = 3), 1:3, sep = ''), 'q8other',
@@ -125,6 +125,33 @@ server <- function(input, output, session){
     responseAll <- read.csv('responses.csv')
     responseAll <- rbind(responseAll, response$response)
     write.csv(responseAll, 'responses.csv', row.names=F)
+    
+    
+    
+    ### Show modal dialog to confirm submission ###
+    observeEvent(input$submitResponse, {
+      showModal(modalDialog(
+        title = 'Survey submitted!',
+        size = 'm',
+        p("Thank you for taking the time to complete this survey. Your participation is greatly appreciated. If you have any questions about the survey, please email the Water Boards' Data Management Innovation Team at ", a(href='mailto:WaterData@waterboards.ca.gov', 'WaterData@waterboards.ca.gov'), "."),
+        easyClose = FALSE
+      ))
+    })
+    
+    ### Reset all input after submission ###
+    reset('basicInfoForm')
+    reset('dataUseForm')
+    reset('dataSkillsForm')
+    reset('addCommentsForm')
+    
+    ### Reset all radio buttons (for Q5)
+    shinyjs::runjs(
+      '$("[type=radio]").prop("checked", false);'
+    )
+    
+    ### Disable submit button - to deter spam submissions ###
+    shinyjs::disable("submitResponse")
+    
   })
   
   #### end server code ####
