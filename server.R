@@ -122,9 +122,9 @@ server <- function(input, output, session){
     response$response[1, 59] <- input$q11
     response$response[1, 60] <- as.character(Sys.time())
     names(response$response) <- qNames
-    responseAll <- read.csv('responses.csv')
+    responseAll <- read.csv('/export/responses.csv')
     responseAll <- rbind(responseAll, response$response)
-    write.csv(responseAll, 'responses.csv', row.names=F)
+    write.csv(responseAll, '/export/responses.csv', row.names=F)
     
     
     
