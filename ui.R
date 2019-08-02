@@ -13,9 +13,7 @@ for(i in 1:nrow(glossary)){
   glossHTML <- paste(glossHTML,strng,sep='')
 }
 
-header <- dashboardHeader(
-  title = 'Data Literacy Survey'
-)
+header <- dashboardHeader()
 
 sidebar <- dashboardSidebar(
   useShinyalert(),
@@ -37,6 +35,22 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  tags$head(tags$style(HTML(
+    '.myClass {
+        font-size: 20px;
+        line-height: 50px;
+        text-align: left;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        padding: 0 15px;
+        overflow: hidden;
+        color: white;
+      }
+    '))),
+  tags$script(HTML('
+      $(document).ready(function() {
+        $("header").find("nav").append(\'<span class="myClass">Water Boards Data Use and Skills Survey</span>\');
+      })
+     ')),
   tabItems(
     #### Overview Tab ####
     tabItem('tabOverview',
@@ -45,7 +59,6 @@ body <- dashboardBody(
               column(8,
                      p('The Water Boards’ Data Management Innovation Team is conducting a survey to better understand how Water Boards staff and managers use and interact with data in their day-to-day work. Your responses will inform a new initiative to offer data science training at the Water Boards.'),
                      p('This survey is voluntary and should take about', tags$b('7 minutes'), 'to complete. All responses will be aggregated and analyzed as a group to protect your anonymity. The last day to participate in the survey is', tags$b('September 27, 2019'),'.'),
-                     p('We will be holding a drawing for four $25 Amazon Gift Cards. To enter the drawing, enter your email address at the end of the survey and submit your completed survey. We ask for your email address only so that we can notify the gift card winners. We will not share or sell your information. The winners of the drawing will be randomly selected and notified after the survey period closes. Participation in the drawing is optional.'),
                      p('If you have any questions, please email', a('WaterData@waterboards.ca.gov', href = 'mailto:WaterData@waterboards.ca.gov'), 'and include "Data Survey" in the subject line.'),
                      p('We thank you for your time and participation!')
               )
@@ -66,6 +79,7 @@ body <- dashboardBody(
                           choices = q2, width = '400px'),
               textInput('q2other', 'Provide name of other division, if applicable:', width = '400px'),
               textOutput('q2other_charlimit'),
+              br(),
               textInput('q3', '3. In what program/functional area do you work (e.g. Nonpoint Source, GAMA)?',
                         width = '400px'),
               textOutput('q3_charlimit'),
@@ -264,11 +278,7 @@ body <- dashboardBody(
             textAreaInput('q11', '11. Do you have any additional comments?', width = '600px', height = '150px'),
             textOutput('q11_charlimit'),
             br(),
-            textInput('q12', q12txt, width = '400px'),
-            textOutput('q12_charlimit'),
-            br(),
             actionButton('submitResponse', 'Complete Survey'),
-            DT::dataTableOutput('testTable')
             ),
     tabItem('tabGlossary',
             titlePanel('Glossary'),
