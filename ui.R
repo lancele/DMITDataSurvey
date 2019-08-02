@@ -294,6 +294,6 @@ ui <- dashboardPage(
   header,
   sidebar,
   body,
-  title = 'Data Literacy Survey',
+  title = 'Water Boards Data Use and Skills Survey',
   skin = 'purple'
 )
