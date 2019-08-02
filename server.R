@@ -88,8 +88,6 @@ server <- function(input, output, session){
   output$q9i_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q9i), ' characters remaining.') })
   output$q10_charlimit <- reactive({ paste0('Only ', max_nchar_long - nchar(input$q10), ' characters remaining.')})
   output$q11_charlimit <- reactive({ paste0('Only ', max_nchar_vlong - nchar(input$q11), ' characters remaining.')})
-  output$q12_charlimit <- reactive({ paste0('Only ', 100 - nchar(input$q12), ' characters remaining.')})
-
   
   observeEvent(input$q2other, {
     if( nchar(input$q2other) > max_nchar_short ){
@@ -179,17 +177,6 @@ server <- function(input, output, session){
     }
   })
   
-  observeEvent(input$q12, {
-    if( nchar(input$q12) > 100 ){
-      updateTextInput(session, 'q12', value = substr(input$q11, 1, 100))
-      showModal(modalDialog(
-        title = 'Error!',
-        'Character limit for Question 11 exceeded!',
-        easyClose = TRUE
-      ))
-    }
-  })
-  
   #### submit survey ####
 
   observeEvent(input$submitResponse, {
@@ -259,8 +246,6 @@ server <- function(input, output, session){
     responseAll <- read.csv('export/responses.csv')
     responseAll <- rbind(responseAll, response$response)
     write.csv(responseAll, 'export/responses.csv', row.names=F)
-    
-    
     
     ### Show modal dialog to confirm submission ###
     observeEvent(input$submitResponse, {
