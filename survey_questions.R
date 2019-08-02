@@ -10,7 +10,7 @@ q1 <- list('Region 1 - North Coast' = 'rb1',
            'Region 8 - Santa Ana' = 'rb8',
            'Region 9 - San Diego' = 'rb9',
            'State Water Board - Sacramento' = 'sb',
-           'Division of Drink Water District' = 'dw')
+           'Division of Drinking Water District' = 'dw')
 
 q2 <- list('DAS', 'DDW', 'DFA', 'DIT', 'DWQ', 'DWR', 'Not Applicable',
            'Other')
