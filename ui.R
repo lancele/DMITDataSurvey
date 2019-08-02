@@ -278,7 +278,7 @@ body <- dashboardBody(
             textAreaInput('q11', '11. Do you have any additional comments?', width = '600px', height = '150px'),
             textOutput('q11_charlimit'),
             br(),
-            actionButton('submitResponse', 'Complete Survey'),
+            actionButton('submitResponse', 'Complete Survey')
             ),
     tabItem('tabGlossary',
             titlePanel('Glossary'),
