@@ -203,7 +203,7 @@ server <- function(input, output, session){
                 'q5other', 'q6name', 'q6answer', 'q7',
                 paste('q8', rep(letters[1:7], each = 3), 1:3, sep = ''), 'q8other',
                 paste('q9', rep(letters[1:9], each = 2), 1:2, sep = ''), 'q9other',
-                'q10', 'q11', 'q12', 'SubmissionTime')
+                'q10', 'q11', 'SubmissionTime')
     
     response$response <- as.data.frame(matrix(nrow=1,ncol=length(qNames)))
     
@@ -217,7 +217,6 @@ server <- function(input, output, session){
       }
       k <- k+1
     }
-    
     
     response$response[1, 13:16] <- c(input$q5other, input$q6name, input$q6answer, input$q7)
     
@@ -240,8 +239,7 @@ server <- function(input, output, session){
     response$response[1, 57] <- input$q9i
     response$response[1, 58] <- input$q10
     response$response[1, 59] <- input$q11
-    response$response[1, 60] <- input$q12
-    response$response[1, 61] <- as.character(Sys.time())
+    response$response[1, 60] <- as.character(Sys.time())
     names(response$response) <- qNames
     responseAll <- read.csv('export/responses.csv')
     responseAll <- rbind(responseAll, response$response)
