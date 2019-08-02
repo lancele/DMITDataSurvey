@@ -65,9 +65,10 @@ body <- dashboardBody(
               selectInput('q2', '2. For which State Water Board division do you currently work?',
                           choices = q2, width = '400px'),
               textInput('q2other', 'Provide name of other division, if applicable:', width = '400px'),
-              
+              textOutput('q2other_charlimit'),
               textInput('q3', '3. In what program/functional area do you work (e.g. Nonpoint Source, GAMA)?',
                         width = '400px'),
+              textOutput('q3_charlimit'),
               br(),
               radioButtons('q4', '4. Are you a supervisor?', width = '400px',
                            choices = list('Yes' = TRUE,
@@ -88,8 +89,8 @@ body <- dashboardBody(
               fluidRow(
                 column(8,
                        DT::dataTableOutput('q5'),
-                       textInput('q5other', 'Please name other Water Boards database, if applicable:', width = '100%')
-                       #verbatimTextOutput('sel')
+                       textInput('q5other', 'Please name other Water Boards database, if applicable:', width = '100%'),
+                       textOutput('q5other_charlimit')
                 )
               ),
               br(),
@@ -186,7 +187,8 @@ body <- dashboardBody(
                 column(2, selectInput('q8f3', '', choices = q8choicesInt, width = '100%'))
               ),
               fluidRow(
-                column(2, textInput('q8g', '', placeholder = 'g. Other:')),
+                column(2, textInput('q8g', '', placeholder = 'g. Other:'),
+                      textOutput('q8g_charlimit')),
                 column(2, selectInput('q8g1', '', choices = q8choicesFreq, width = '100%')),
                 column(2, selectInput('q8g2', '', choices = q8choicesExp, width = '100%')),
                 column(2, selectInput('q8g3', '', choices = q8choicesInt, width = '100%'))
@@ -242,7 +244,8 @@ body <- dashboardBody(
                 column(2, selectInput('q9h2', '', choices = q9choicesInt))
               ),
               fluidRow(
-                column(2, textInput('q9i', '', placeholder = 'i. Other:')),
+                column(2, textInput('q9i', '', placeholder = 'i. Other:'),
+                      textOutput('q9i_charlimit')),
                 column(2, selectInput('q9i1', '', choices = q9choicesExp)),
                 column(2, selectInput('q9i2', '', choices = q9choicesInt))
               )
@@ -256,10 +259,13 @@ body <- dashboardBody(
             titlePanel('Additional Comments'),
             br(),
             textAreaInput('q10', q10txt, width = '600px', height = '150px'),
+            textOutput('q10_charlimit'),
             br(),
             textAreaInput('q11', '11. Do you have any additional comments?', width = '600px', height = '150px'),
+            textOutput('q11_charlimit'),
             br(),
             textInput('q12', q12txt, width = '400px'),
+            textOutput('q12_charlimit'),
             br(),
             actionButton('submitResponse', 'Complete Survey'),
             DT::dataTableOutput('testTable')
