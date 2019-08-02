@@ -55,3 +55,4 @@ q9choicesInt <- q8choicesInt
 q10txt <-  '10. Are there any additional data analysis related tasks, tools, or 
         topics that you would be interested in learning?'
 
+q12txt <- '12. Do you want to enter the drawing for a $25 Amazon giftcard? If so, please enter your email address. Your participation in the drawing is optional.'
