@@ -1,9 +1,13 @@
 library(shiny)
 library(shinyalert)
 library(DT)
+library(shinyjs)
 
 glossary <- read.csv('glossary_shinysurvey.csv', colClasses = rep('character', 2))
 source('survey_questions.R')
+max_nchar_short <- 50
+max_nchar_long <- 500
+max_nchar_vlong <- 1000
 server <- function(input, output, session){
   
   response <- reactiveValues()
@@ -74,9 +78,137 @@ server <- function(input, output, session){
     shinyalert(title = strTitle, text = strOut, html=TRUE)
   })
   
+    #### character limit on free-response questions ####
+  
+  output$q2other_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q2other), ' characters remaining.') })
+  output$q3_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q3), ' characters remaining.') })
+  output$q5other_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q5other), ' characters remaining.') })
+  output$q6name_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q6name), ' characters remaining.') })
+  output$q8g_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q8g), ' characters remaining.') })
+  output$q9i_charlimit <- reactive({ paste0('Only ', max_nchar_short - nchar(input$q9i), ' characters remaining.') })
+  output$q10_charlimit <- reactive({ paste0('Only ', max_nchar_long - nchar(input$q10), ' characters remaining.')})
+  output$q11_charlimit <- reactive({ paste0('Only ', max_nchar_vlong - nchar(input$q11), ' characters remaining.')})
+  output$q12_charlimit <- reactive({ paste0('Only ', 100 - nchar(input$q12), ' characters remaining.')})
+
+  
+  observeEvent(input$q2other, {
+    if( nchar(input$q2other) > max_nchar_short ){
+      updateTextInput(session, 'q2other', value = substr(input$q2other, 1, max_nchar_short))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 2 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q3, {
+    if( nchar(input$q3) > max_nchar_short ){
+      updateTextInput(session, 'q3', value = substr(input$q3, 1, max_nchar_short))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 3 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q5other, {
+    if( nchar(input$q5other) > max_nchar_short ){
+      updateTextInput(session, 'q5other', value = substr(input$q5other, 1, max_nchar_short))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 5 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q6name, {
+    if( nchar(input$q6name) > max_nchar_short ){
+      updateTextInput(session, 'q6name', value = substr(input$q6name, 1, max_nchar_short))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 6 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q8g, {
+    if( nchar(input$q8g) > max_nchar_short ){
+      updateTextInput(session, 'q8g', value = substr(input$q8g, 1, max_nchar_short))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 8 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q9i, {
+    if( nchar(input$q9i) > max_nchar_short ){
+      updateTextInput(session, 'q9i', value = substr(input$q9i, 1, max_nchar_short))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 9 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q10, {
+    if( nchar(input$q10) > max_nchar_long ){
+      updateTextInput(session, 'q10', value = substr(input$q10, 1, max_nchar_long))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 10 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q11, {
+    if( nchar(input$q11) > max_nchar_vlong ){
+      updateTextInput(session, 'q11', value = substr(input$q11, 1, max_nchar_vlong))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 11 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
+  observeEvent(input$q12, {
+    if( nchar(input$q12) > 100 ){
+      updateTextInput(session, 'q12', value = substr(input$q11, 1, 100))
+      showModal(modalDialog(
+        title = 'Error!',
+        'Character limit for Question 11 exceeded!',
+        easyClose = TRUE
+      ))
+    }
+  })
+  
   #### submit survey ####
 
   observeEvent(input$submitResponse, {
+    
+    # limit number of responses to prevent file from blowing up
+    # if a response is filled out in its entirety (i.e. char limit reached for free response questions)
+    # and assuming all individual characters and numbers are 32-bit UTF (4 bytes)
+    # then a single response has a max memory of 7.6 KB
+    # using wikipedia's CalEPA page with the # of employees (4550, round to 5000 for any updates)
+    # Then response file has a maximum of ~38 MB, round 40 MB for safety
+    responseFilesize <- file.info('export/responses.csv')$size
+    # filesize returns # of bytes
+    if( responseFilesize > 40e6 ){
+      showModal(modalDialog(
+        title = 'Error!',
+        'Number of responses exceeded limit. Please contact WaterData@waterboards.ca.gov for additional info.',
+        easyClose = TRUE
+      ))
+    }
 
     #### Record responses and write to file ####
 
@@ -124,9 +256,9 @@ server <- function(input, output, session){
     response$response[1, 60] <- input$q12
     response$response[1, 61] <- as.character(Sys.time())
     names(response$response) <- qNames
-    responseAll <- read.csv('/export/responses.csv')
+    responseAll <- read.csv('export/responses.csv')
     responseAll <- rbind(responseAll, response$response)
-    write.csv(responseAll, '/export/responses.csv', row.names=F)
+    write.csv(responseAll, 'export/responses.csv', row.names=F)
     
     
     
